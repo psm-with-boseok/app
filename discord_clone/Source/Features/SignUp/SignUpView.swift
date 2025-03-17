@@ -11,44 +11,47 @@ struct SignUpView: View {
     @StateObject var viewModel = SignUpViewModel()
     @Binding var signUpBack: Bool
     @State var inputCheck: Bool = true
-
+    @State var moveNextView: Bool = false
+    
     @State private var selectChoice = 0
     var body: some View {
-        NavigationStack{
-            ZStack{
-                Color.customDarkGray
-                    .ignoresSafeArea()
+        ZStack{
+            Color.customDarkGray
+                .ignoresSafeArea()
+            
+            VStack{
+                SignUpViewHeader(signUpBackButton: $signUpBack)
                 
-                VStack{
-                    SignUpViewHeader(signUpBackButton: $signUpBack)
-                    
-                    Text("전화번호나 이메일 주소를\n입력하세요")
-                        .multilineTextAlignment(.center)
-                        .font(AppFonts.Header)
-                        .foregroundStyle(.white)
-                    
-                    SignUpPickerView(selectChoice: $selectChoice)
-                    
-                    Spacer()
-                        .frame(height: 30)
-                    
-                    if selectChoice == 0{
-                        CustomTextField(title: "전화번호", subtitle: "전화번호", text: $viewModel.EmailorPassword)
-                    }else{
-                        CustomTextField(title: "이메일", subtitle: "이메일", text: $viewModel.EmailorPassword)
-                    }
-                    
-                    SignUpViewButtonView(isDisabled: $inputCheck)
-                    
-                    Spacer()
+                Text("전화번호나 이메일 주소를\n입력하세요")
+                    .multilineTextAlignment(.center)
+                    .font(AppFonts.Header)
+                    .foregroundStyle(.white)
+                
+                SignUpPickerView(selectChoice: $selectChoice)
+                
+                Spacer()
+                    .frame(height: 30)
+                
+                if selectChoice == 0{
+                    CustomTextField(title: "전화번호", subtitle: "전화번호", text: $viewModel.EmailorPassword)
+                }else{
+                    CustomTextField(title: "이메일", subtitle: "이메일", text: $viewModel.EmailorPassword)
                 }
+                
+                SignUpViewButtonView(isDisabled: $inputCheck,buttonClick: $moveNextView)
+                    .navigationDestination(isPresented: $moveNextView){
+                        SignUpNameView(signUpNameBack: $moveNextView)
+                            .environmentObject(viewModel)
+                    }
+                
+                Spacer()
             }
-            .onChange(of: viewModel.EmailorPassword){
-                inputCheck = viewModel.EmailorPassword.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                print(inputCheck)
-            }
-            .navigationBarBackButtonHidden()
         }
+        .onChange(of: viewModel.EmailorPassword){
+            inputCheck = viewModel.EmailorPassword.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            print(inputCheck)
+        }
+        .navigationBarBackButtonHidden()
     }
 }
 
@@ -86,20 +89,20 @@ private struct SignUpPickerView: View {
             
             GeometryReader { geometry in
                 let totalSegments = CGFloat(choice.count)
-                    
-                    let segmentWidth = geometry.size.width / totalSegments
-                    
-                    let highlightWidth: CGFloat = segmentWidth - 15
-                    
-                    
-                    let offsetX = segmentWidth * CGFloat(selectChoice)
-                                 + (segmentWidth - highlightWidth) / 2
-                    
-                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                
+                let segmentWidth = geometry.size.width / totalSegments
+                
+                let highlightWidth: CGFloat = segmentWidth - 15
+                
+                
+                let offsetX = segmentWidth * CGFloat(selectChoice)
+                + (segmentWidth - highlightWidth) / 2
+                
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
                     .fill(.customDarkGray)
-                        .frame(width: highlightWidth, height: 34)
-                        .offset(x: offsetX, y: 5)
-                        .animation(.easeInOut, value: selectChoice)
+                    .frame(width: highlightWidth, height: 34)
+                    .offset(x: offsetX, y: 5)
+                    .animation(.easeInOut, value: selectChoice)
             }
             
             HStack(spacing: 0) {
@@ -122,12 +125,12 @@ private struct SignUpPickerView: View {
 
 private struct SignUpViewButtonView: View {
     @Binding var isDisabled: Bool
-    
+    @Binding var buttonClick: Bool
     var body: some View {
         if isDisabled{
             CustomButton(
                 title: "다음",
-                action: { print("가입완료") },
+                action: { buttonClick.toggle() },
                 width: 360,
                 foregroundColor: .customSkyBlue,
                 backgroundColor: .customBlue3
@@ -136,7 +139,7 @@ private struct SignUpViewButtonView: View {
         } else{
             CustomButton(
                 title: "다음",
-                action: { print("가입완료") },
+                action: { buttonClick.toggle() },
                 width: 360,
                 foregroundColor: .white,
                 backgroundColor: .customBlue2
@@ -144,6 +147,7 @@ private struct SignUpViewButtonView: View {
         }
     }
 }
+
 #Preview {
     @Previewable @State var back: Bool = false
     SignUpView(signUpBack: $back)

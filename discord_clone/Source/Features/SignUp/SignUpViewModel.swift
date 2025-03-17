@@ -11,5 +11,5 @@ class SignUpViewModel: ObservableObject {
     @Published var EmailorPassword: String = ""
     @Published var id: String = ""
     @Published var password: String = ""
-    @Published var username: String? = nil
+    @Published var username: String = ""
 }

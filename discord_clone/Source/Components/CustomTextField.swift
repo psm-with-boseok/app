@@ -23,6 +23,7 @@ struct CustomTextField: View {
                 Spacer()
             }
             TextField("",text: $text,prompt: Text(subtitle).foregroundColor(.white.opacity(0.6)).bold())
+                .frame(height: 25)
                 .padding()
                 .background(.customDark)
                 .foregroundStyle(.white)
