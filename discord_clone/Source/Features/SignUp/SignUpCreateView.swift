@@ -27,6 +27,7 @@ struct SignUpCreateView: View {
                 
                 Spacer()
                     .frame(height: 30)
+                
                 CustomTextField(
                     title: "사용자명",
                     subtitle: "별명에서 따오기",
