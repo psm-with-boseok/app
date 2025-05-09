@@ -39,6 +39,7 @@ struct SignUpNameView: View {
                 )
                 .navigationDestination(isPresented: $moveNextView){
                     SignUpCreateView(signUpCreateBack: $moveNextView)
+                        .navigationBarBackButtonHidden()
                         .environmentObject(SignUpViewModel())
                 }
                 Spacer()

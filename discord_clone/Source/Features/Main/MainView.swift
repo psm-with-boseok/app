@@ -1,6 +1,6 @@
 //
-//  MainView.swift
-//  discord_clone
+// MainView.swift
+// discord_clone
 //
 //  Created by 박성민 on 3/9/25.
 //
@@ -59,6 +59,7 @@ struct MainView: View {
                     )
                     .navigationDestination(isPresented: $goToLogin){
                         LoginView(LoginBack: $goToLogin)
+                            .navigationBarBackButtonHidden()
                     }
                 }
             }
